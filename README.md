@@ -32,11 +32,9 @@ mysql -u root CarbonNeutralEnergyDB < backend/extra_schema.sql
 
 ```bash
 cd backend
-python -m venv .venv
-# Windows:  .venv\Scripts\activate
-# macOS/Linux:  source .venv/bin/activate
+python -m venv venv
+source venv/bin/activate.fish
 pip install -r requirements.txt
-
 cp .env.example .env       # adjust if needed
 python app.py
 ```
