@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+  --leaf-tilt: 0deg;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #e8fbef;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #061a12;
+  position: relative;
+}
+
+/* Living animated gradient backdrop */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(46,204,113,0.22), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(123,241,168,0.16), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(46,204,113,0.10), transparent 60%),
+    linear-gradient(135deg, #061a12 0%, #0a2a1d 60%, #0f3d2e 100%);
+  background-size: 200% 200%, 200% 200%, 240% 240%, 100% 100%;
+  animation: flow 22s ease-in-out infinite;
+}
+
+/* Cursor-following aurora glow */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(600px circle at var(--cursor-x) var(--cursor-y),
+              rgba(123,241,168,0.10), transparent 60%);
+  transition: background 0.2s ease;
+}
+
+@keyframes flow {
+  0%,100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0 0; }
+  50%     { background-position: 100% 50%, 0% 50%, 60% 40%, 0 0; }
+}
+
+/* Glassmorphism — layered depth */
+.glass {
+  background: linear-gradient(135deg, rgba(15,61,46,0.55), rgba(8,32,23,0.35));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(168, 230, 207, 0.18);
+  box-shadow:
+    0 20px 50px -20px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.glass::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(168,230,207,0.08) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.9s ease;
+  pointer-events: none;
+}
+.glass:hover::before { transform: translateX(100%); }
+
+.glass-light {
+  background: rgba(168, 230, 207, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 230, 207, 0.15);
+}
+
+/* Dynamic intensity glow — set --glow on the element */
+.glow-ring {
+  box-shadow:
+    0 0 0 1px rgba(168,230,207,0.2),
+    0 0 calc(var(--glow, 20px)) calc(var(--glow, 20px) / 4) rgba(46,204,113, var(--glow-alpha, 0.35));
+  transition: box-shadow 0.6s ease;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-medium transition-all;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #2ecc71, #1e9e57);
+  background-size: 200% 200%;
+  animation: btnFlow 4s ease infinite;
+  @apply text-white shadow-lg shadow-emerald-700/30 hover:shadow-emerald-500/50 hover:scale-[1.03];
+}
+@keyframes btnFlow { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.btn-ghost { @apply text-leaf-mint hover:bg-white/5; }
+.btn-danger { @apply bg-red-500/80 text-white hover:bg-red-500; }
+
+.input {
+  @apply w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-leaf-mint placeholder-leaf-mint/40 focus:border-leaf-fresh focus:outline-none focus:ring-2 focus:ring-leaf-fresh/30 transition;
+}
+.label { @apply text-xs uppercase tracking-wider text-leaf-mint/70 mb-1; }
+
+table.eco { @apply w-full text-sm; }
+table.eco th { @apply text-left text-leaf-mint/70 font-medium uppercase text-xs tracking-wider px-3 py-3 border-b border-white/10; }
+table.eco td { @apply px-3 py-3 border-b border-white/5; }
+table.eco tr { transition: background 0.25s ease; }
+table.eco tr:hover td { background: rgba(46,204,113,0.08); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(46,204,113,0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(46,204,113,0.5); }
+
+/* Floating oxygen-bubble particles */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.55), rgba(168,230,207,0.25) 40%, transparent 70%);
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.2);
+  pointer-events: none;
+  animation: rise linear infinite;
+  filter: blur(0.3px);
+}
+@keyframes rise {
+  0%   { transform: translate3d(0,100vh,0) scale(0.4); opacity: 0; }
+  10%  { opacity: 0.85; }
+  50%  { transform: translate3d(20px,50vh,0) scale(1); }
+  100% { transform: translate3d(-20px,-10vh,0) scale(1.25); opacity: 0; }
+}
+
+/* Cursor-reactive leaf — uses --leaf-tilt set in JS */
+.leaf-react {
+  transform: rotate(var(--leaf-tilt));
+  transition: transform 0.25s cubic-bezier(.2,.7,.2,1);
+  transform-origin: bottom center;
+}
+
+/* Micro-interactions */
+.tap { transition: transform 0.15s ease, box-shadow 0.2s ease; }
+.tap:active { transform: scale(0.97); }
+
+.lift { transition: transform 0.3s cubic-bezier(.2,.7,.2,1), box-shadow 0.3s ease; }
+.lift:hover { transform: translateY(-4px); }
+
+/* Page enter */
+@keyframes fadeUp { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
+.fade-up { animation: fadeUp 0.5s ease both; }
+
+/* Pulse for live indicator */
+@keyframes livePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(46,204,113,0.6); }
+  50%     { box-shadow: 0 0 0 8px rgba(46,204,113,0); }
+}
+.live-dot { animation: livePulse 2s ease-in-out infinite; }
